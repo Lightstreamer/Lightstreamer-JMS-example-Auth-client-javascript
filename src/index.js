@@ -14,15 +14,6 @@
   limitations under the License.
 */
 
-// Global JMS connection and sessions
-var _conn= null;
-var _stocksTopicSession= null;
-var _stocksQueueSession= null;
-var _portfolioTopicSession= null;
-var _portfolioQueueSession= null;
-var _chatTopicSession= null;
-var _chatQueueSession= null;
-
 // In this example we authenticate via JavaScript by sending an "Ajax" request to a WebServer that will answer
 // with a session token (or refusing the request).
 // We do not actually deploy the WebServer, we will simulate the authentication on the client (see the js/Authentication.js)
@@ -31,6 +22,7 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
     function(Authentication, Constants, stocks_grid, portfolio_grid, StatusWidget, ConnectionFactory) {
 
    var widget= new StatusWidget("left", "0px", true);
+   var connection= null;
 
    $("#submit_form :submit").click(function(event) {
     // The user wants to authenticate
@@ -84,12 +76,12 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
           // Now we can connect to JMS Gateway
           ConnectionFactory.createConnection(Constants.SERVER, Constants.ADAPTER_SET, Constants.DATA_ADAPTER, user, token, {
             onConnectionCreated: function(conn) {
-                _conn= conn;
+                connection= conn;
 
                 // Exception listener: JMS exception, as well as exceptions thrown by
                 // the Authentication Hook, are sent asynchronously and received by
                 // this handler
-                _conn.setExceptionListener({
+                conn.setExceptionListener({
                   onException: function(exception) {
                     if (exception.getErrorCode() == null) {
 
@@ -120,20 +112,21 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
 
                             default:
 
-                            // Other error
-                            jError("Error: " + exception.getMessage(), Constants.J_NOTIFY_OPTIONS_ERR);
+                                // Other error
+                                jError("Error: " + exception.getMessage(), Constants.J_NOTIFY_OPTIONS_ERR);
+                                break;
                         }
                     }
                   }
                 });
 
                 // Start the connection
-                _conn.start();
+                conn.start();
 
                 // Start the applications
-                startStockList();
-                startPortfolio();
-                startChat();
+                startStockList(conn);
+                startPortfolio(conn);
+                startChat(conn);
 
             }, onConnectionFailed: function(errorCode, errorMessage) {
                 jError("Connection to JMS Gateway refused: " + errorCode + " " + errorMessage, Constants.J_NOTIFY_OPTIONS_ERR);
@@ -153,6 +146,7 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
           });
         }
       },
+
       complete: function() {
         $("input").prop('disabled', false);
       }
@@ -164,9 +158,11 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
 
   // Setup the logout button
   $("#logout").click(function() {
-    if (_conn != null) {
-        _conn.close();
-        _conn= null;
+    if (connection != null) {
+
+        // Close the connection
+        connection.close();
+        connection= null;
     }
 
     // Clear the grids
@@ -181,13 +177,13 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
   });
 });
 
-function startStockList() {
+function startStockList(conn) {
     require(["js/stocks_grid"], function(stocks_grid) {
 
         // Start the Stock-List application
-        _stocksTopicSession= _conn.createSession(false, "PRE_ACK");
-        var topic= _stocksTopicSession.createTopic("stocksTopic");
-        var consumer= _stocksTopicSession.createConsumer(topic, null);
+        var topicSession= conn.createSession(false, "PRE_ACK");
+        var topic= topicSession.createTopic("stocksTopic");
+        var consumer= topicSession.createConsumer(topic, null);
 
         // Add listener to message consumer
         consumer.setMessageListener({
@@ -205,80 +201,118 @@ function startStockList() {
             stocks_grid.updateRow(key, values);
           }
         });
-
-        // Send messages to Stock-List Demo Service, it will start publishing
-        // new values on the stocks topic
-        _stocksQueueSession= _conn.createSession(false, "AUTO_ACK");
-        var queue= _stocksQueueSession.createQueue("stocksQueue");
-        var producer= _stocksQueueSession.createProducer(queue, null);
-
-        var msg= _stocksQueueSession.createTextMessage("subscribeitem2_2");
-        producer.send(msg);
-
-        msg= _stocksQueueSession.createTextMessage("subscribeitem13_13");
-        producer.send(msg);
-
-        msg= _stocksQueueSession.createTextMessage("subscribeitem17_17");
-        producer.send(msg);
     });
 }
 
-function startPortfolio() {
+function startPortfolio(conn) {
     require(["js/Constants", "js/portfolio_grid"], function(Constants, portfolio_grid) {
 
-        // Start the Portfolio application
-        _portfolioTopicSession= _conn.createSession(false, "PRE_ACK");
-        var topic= _portfolioTopicSession.createTopic("portfolioTopic");
-        var consumer= _portfolioTopicSession.createConsumer(topic, null);
-
-        // Let's define the initial sorting column
-        portfolio_grid.changeSort("key");
-
-        // Add listener to message consumer
-        consumer.setMessageListener({
+        // This listener will be used to reroute updates from
+        // the JMS consumers to the UI
+        var messageListener= {
           onMessage: function(message) {
-
-            // Message received
             var portfolioMessage= message.getObject();
-
-            // Update the grid
-            portfolio_grid.updateRow(portfolioMessage.key, portfolioMessage);
+            portfolio_grid.updateRow(portfolioMessage.key,portfolioMessage);
           }
+        };
+
+        // Start the Portfolio application
+        var session= conn.createSession(false, "PRE_ACK");
+        var queue= session.createQueue("portfolioQueue");
+        var producer= session.createProducer(queue, null);
+
+        // Create the topic, updates to the portfolio status will be received here
+        var topic= session.createTopic("portfolioTopic");
+        var consumer= session.createConsumer(topic, null);
+        consumer.setMessageListener(messageListener);
+
+        // We'll ask the service about the current status of the portfolio,
+        // the answer will arrive on this temporary queue
+        session.createTemporaryQueue(function(tempQueue) {
+
+            // Temp queue ready, attach a listener
+            var responseConsumer= session.createConsumer(tempQueue);
+            responseConsumer.setMessageListener(messageListener);
+
+            // Create the request
+            var statusRequest= session.createMapMessage();
+            statusRequest.setObject("request", "GET_PORTFOLIO_STATUS");
+            statusRequest.setObject("portfolio", Constants.PORTFOLIO_ID);
+
+            // Set the reply to field to the temp queue created above, so the service know where to answer
+            statusRequest.setJMSReplyTo(tempQueue);
+
+            // We might use a correlation id to match request/response:
+            //   var correlationId= new Date().getTime() + "" + Math.round(Math.random()*1000);
+            //   statusRequest.setJMSCorrelationID(correlationId);
+            producer.send(statusRequest);
         });
 
-        // Send subscription message for portfolio
-        _portfolioQueueSession= _conn.createSession(false, "AUTO_ACK");
-        var queue= _portfolioQueueSession.createQueue("portfolioQueue");
-        var producer= _portfolioQueueSession.createProducer(queue, null);
+        // Fill the select with some stocks that can be bought/sold
+        var AVAIL_STOCKS= 31;
+        for (var i= 1; i <= AVAIL_STOCKS; i++) {
+            var item= "item"+i;
+            $("#stockN").append($("<option />").val(item).text(item));
+        }
 
-        var msg= _portfolioQueueSession.createTextMessage("SUBSCRIBE|" + Constants.PORTFOLIO_ID);
-        producer.send(msg);
+        // Attach the handler to the buy/sell buttons
+        var buySell= function(event) {
+            event.preventDefault();
+
+            var qty= Number($("#qtyN").val());
+            if (!qty || qty < 0) {
+                alert("Please fill the 'quantity' field with a positive number.");
+                return;
+            }
+
+            var buyRequest= session.createMapMessage();
+            buyRequest.setObject("request", $(this).val().toUpperCase());
+            buyRequest.setObject("portfolio", Constants.PORTFOLIO_ID);
+            buyRequest.setObject("stock", $("#stockN").val());
+            buyRequest.setObject("quantity",qty);
+            producer.send(buyRequest);
+        }
+
+        $("#buy").click(buySell);
+        $("#sell").click(buySell);
+
+        // Enable form
+        $("input").prop('disabled', false);
     });
 }
 
-function startChat() {
+function startChat(conn) {
 
     // Start the chat application
-    _chatTopicSession= _conn.createSession(false, "PRE_ACK");
-    var topic= _chatTopicSession.createTopic("chatTopic");
-    var consumer= _chatTopicSession.createConsumer(topic, null);
+    var topicSession= conn.createSession(false, "PRE_ACK");
+    var topic= topicSession.createTopic("chatTopic");
+    var consumer= topicSession.createConsumer(topic, null);
+    var producer= topicSession.createProducer(topic, null);
 
     // Add listener to the message consumer
     consumer.setMessageListener({
         onMessage: function(message) {
 
           // Message received
-          var simpleChatMessage= message.getObject();
-
-          // Add the message to the html using jquery
-          $("#messages").append(
-              $("<div>"). // Create a div per each message
-                append($("<span>").text(simpleChatMessage.timestamp).addClass("timestamp")). // Fill it with timestamp
-                append(": ").
-                append($("<span>").text(simpleChatMessage.message).addClass("message")). // Fill it with the message
-                addClass("messageContainer")
-              ).scrollTop($("#messages").prop("scrollHeight")); // Move the scrollbar on the bottom
+          $("#messages").append($("<div>").text(message.getText()).addClass("messageContainer")) // Append the message
+            .scrollTop($("#messages").prop("scrollHeight")); // Move the scrollbar on the bottom
         }
     });
+
+    // Attach the handler to the send button
+    var send= function(event) {
+        event.preventDefault();
+
+        // Get value from form and send to JMS topic
+        var text= $("#user_message").val();
+        $("#user_message").val("");
+        var message= topicSession.createTextMessage(text);
+        producer.send(message);
+    }
+
+    $("#chatForm").submit(send);
+
+    // Enable form
+    $("input").prop('disabled', false);
 }
 

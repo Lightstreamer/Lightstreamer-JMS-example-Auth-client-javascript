@@ -5,6 +5,10 @@ The JMS Gateway Authentication and Authorization Demo is a simple example illust
 
 This project includes a simple web client front-end example for the [Lightstreamer JMS Gateway - Authentication and Authorization Demo - Java Hook](https://github.com/Weswit/Lightstreamer-JMS-example-Auth-hook-java).
 
+## Screenshot
+
+![screenshot](screenshot.png)
+
 ## Details
 
 This *Authentication and Authorization Demo* illustrates the typical best practice used for Lightstreamer JMS Gateway Web applications, when a Web/Application server is involved in the process.
@@ -66,17 +70,16 @@ Before you can run the demo of this project some dependencies need to be solved:
 * Note that, as prerequisite, the following projects have to be deployed on your local Lightstreamer Server instance (running a properly configured JMS Gateway). Please check out the projects and follow the installation instructions provided with them:
   * [Lightstreamer JMS Gateway - Stock-List Demo - Java (JMS) Service](https://github.com/Weswit/Lightstreamer-JMS-example-StockList-service-java)
   * [Lightstreamer JMS Gateway - Portfolio Demo - Java (JMS) Service](https://github.com/Weswit/Lightstreamer-JMS-example-Portfolio-service-java)
-  * [Lightstreamer JMS Gateway - Basic Chat Demo - Java (JMS) Service](https://github.com/Weswit/Lightstreamer-JMS-example-Chat-service-java)
 * Install the [JMS Gateway Hook](https://github.com/Weswit/Lightstreamer-JMS-example-Auth-hook-java) required by this project:
-* Launch Lightstreamer Server and the three JMS demo services above.
+* Launch Lightstreamer Server and the two JMS demo services above.
 * Get the `lightstreamer-jms.js` file from the [Lightstreamer JMS Gateway](http://download.lightstreamer.com/#jms) and put it in the `src/js` folder of this project.
 * Lightstreamer JS client is currently hot-linked in the html page: you may want to replace it with a local version and/or to upgrade its version.
 * RequireJS is currently hot-linked in the html page: you may want to replace it with a local version and/or to upgrade its version.
 * jQuery is currently hot-linked in the html page: you may want to replace it with a local version and/or to upgrade its version.
 
 Now, you need to configure the `src/js/Constants.js` of this example by specifying the name of the data adapter you are going to use.
-By default the demo will look for the <b>HornetQ</b> data adapter, please refer to the related services projects ([Stock-List Demo](https://github.com/Weswit/Lightstreamer-JMS-example-StockList-service-java),
-[Portfolio Demo](https://github.com/Weswit/Lightstreamer-JMS-example-Portfolio-service-java) or [Chat Demo](https://github.com/Weswit/Lightstreamer-JMS-example-Chat-service-java))
+By default the demo will look for the <b>HornetQ</b> data adapter, please refer to the related services projects ([Stock-List Demo](https://github.com/Weswit/Lightstreamer-JMS-example-StockList-service-java) and
+[Portfolio Demo](https://github.com/Weswit/Lightstreamer-JMS-example-Portfolio-service-java))
 for more details on the choice of a JMS broker to be used.
 
 To set the data adapter name and the connection name look where the Constants object is returned:

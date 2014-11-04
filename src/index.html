@@ -57,32 +57,21 @@
           <div id="scroll_stock_list">
 
             <!-- Stocks table -->
-            <table cellspacing="0" cellpadding="2" width="500" border="0" >
+            <table cellspacing="0" cellpadding="2" width="665" border="0" >
               <tr class="tableTitle">
-                <td width="200" style="text-align: left">Name</td>
-                <td width="50">Last</td>
-                <td width="100" style="text-align: center">Time</td>
-                <td width="50">Change</td>
+                <td width="265" style="text-align: left">Name</td>
+                <td width="150">Last</td>
+                <td width="150" style="text-align: center">Time</td>
+                <td width="100">Change</td>
               </tr>
-              <tr class="lscold">
-                <td nowrap="nowrap" style="text-align: left"><div class="stockNameOdd" data-source="lightstreamer" data-grid="stocks" data-item="item2" data-field="stock_name">Loading...</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item2" data-field="last_price">-</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item2" data-field="time">-</div></td>
-                <td nowrap="nowrap"><div data-source="lightstreamer" data-grid="stocks" data-item="item2" data-field="pct_change">-</div></td>
-              </tr>
-              <tr class="lscold">
-                <td nowrap="nowrap" style="text-align: left"><div class="stockNameEven" data-source="lightstreamer" data-grid="stocks" data-item="item13" data-field="stock_name">Loading...</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item13" data-field="last_price">-</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item13" data-field="time">-</div></td>
-                <td nowrap="nowrap"><div data-source="lightstreamer" data-grid="stocks" data-item="item13" data-field="pct_change">-</div></td>
-              </tr>
-              <tr class="lscold">
-                <td nowrap="nowrap" style="text-align: left"><div class="stockNameOdd" data-source="lightstreamer" data-grid="stocks" data-item="item17" data-field="stock_name">Loading...</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item17" data-field="last_price">-</div></td>
-                <td><div data-source="lightstreamer" data-grid="stocks" data-item="item17" data-field="time">-</div></td>
-                <td nowrap="nowrap"><div data-source="lightstreamer" data-grid="stocks" data-item="item17" data-field="pct_change">-</div></td>
+              <tr id="stocks" data-source="lightstreamer">
+                <td><div data-source="lightstreamer" data-field="stock_name">Loading...</div></td>
+                <td><div data-source="lightstreamer" data-field="last_price">-</div></td>
+                <td><div data-source="lightstreamer" data-field="time">-</div></td>
+                <td><div data-source="lightstreamer" data-field="pct_change">-</div></td>
               </tr>
             </table>
+
           </div>
         </div>
 
@@ -91,23 +80,18 @@
           <div id="scroll_portfolio">
 
             <!-- Portfolio table -->
-            <table width="500" cellspacing="1" cellpadding="2" border="0">
+            <table width="665" cellspacing="1" cellpadding="2" border="0">
               <tr>
-                <td width="150" nowrap id="col_command" class="tableTitle button" data-sorting="command">
-                  Command
-                  <img id="img_command" /></td>
-
-                <td width="150" nowrap id="col_key" class="tableTitle button" data-sorting="key">
-                  Key
+                <td width="365" nowrap id="col_key" class="tableTitle button" data-sorting="key">
+                  Stock
                   <img id="img_key" /></td>
 
-                <td width="200" nowrap id="col_qty" class="tableTitle button" data-sorting="qty">
+                <td width="300" nowrap id="col_qty" class="tableTitle button" data-sorting="qty">
                   Quantity
                   <img id="img_qty" /></td>
               </tr>
               <!-- row template; will be cloned for each received "ADD" command -->
               <tr class="lscold" id="portfolio_grid" data-source="lightstreamer">
-                <td style="text-align: center;"><div data-source="lightstreamer" data-field="command"></div></td>
                 <td style="text-align: center;"><div data-source="lightstreamer" data-field="key"></div></td>
                 <td style="text-align: right;"><div data-source="lightstreamer" data-field="qty"></div></td>
               </tr>
@@ -115,26 +99,27 @@
 
             <br />
 
-            <!-- order entry section; see management code in buysell.js -->
-            <form onSubmit="return false;">
-              <table width="500" border="0" cellpadding="2" cellspacing="0">
+            <!-- Portfolio order entry section -->
+            <form id="portfolioForm">
+              <table width="665" border="0" cellpadding="2" cellspacing="0">
                 <tr class="tableTitle">
                   <td colspan="3">Submit Order</td>
                 </tr>
                 <tr class="inputPanel">
-                  <td width="100">
+                  <td width="265">
                     <select id="stockN" type="select" style="font-size: 8pt"></select>
                   </td>
-                  <td width="150">
+                  <td width="200">
                     Quantity: <input id="qtyN" type="text" size="8" style="font-size: 8pt" />
                   </td>
-                  <td width="150" style="text-align: center;">
-                    <input type="submit" id="buy" disabled value="Buy" onclick="submitOrder('BUY')" />&nbsp;&nbsp;
-                    <input type="submit" id="sell" disabled value="Sell" onclick="submitOrder('SELL')" />
+                  <td width="200" style="text-align: center;">
+                    <input type="submit" id="buy" disabled value="Buy"/>&nbsp;&nbsp;
+                    <input type="submit" id="sell" disabled value="Sell"/>
                   </td>
                 </tr>
               </table>
             </form>
+
           </div>
         </div>
 
@@ -147,13 +132,14 @@
             </div>
 
             <!-- Chat message submission form -->
-            <form onSubmit="return false;" class="formPanel">
+            <form id="chatForm" class="formPanel">
               <div class="sendTitle">Send a message:</div>
               <div class="formElements">
-                <input id="user_message" type="text" disabled size="70" />
-                <input id="mex_button" type="submit" disabled value="Send" onclick="submitMessage()" />
+                <input id="user_message" type="text" disabled size="85" />
+                <input type="submit" disabled value="Send" />
               </div>
             </form>
+
           </div>
         </div>
 
@@ -161,7 +147,7 @@
           <h2>Use one of the following user/password to login</h2>
           <h3>Click a user to copy his credentials in the form</h3>
 
-          <table>
+          <table width="665">
             <thead>
               <tr>
                 <th>User</th>
@@ -182,8 +168,6 @@
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="js/jNotify.jquery.min.js"></script>
     <script src="js/lightstreamer-jms.js"></script>
-    <script src="js/buysell.js"></script>
-    <script src="js/chat.js"></script>
     <script src="index.js"></script>
 
   </body>

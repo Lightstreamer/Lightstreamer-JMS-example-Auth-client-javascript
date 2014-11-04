@@ -47,7 +47,7 @@ define(["DynaGrid"], function(DynaGrid) {
     },
 
     updateRow: function(key,data) {
-      if (data.command == "DELETE") {
+      if (data.qty == "0") {
         portfolioGrid.removeRow(key);
       } else {
         portfolioGrid.updateRow(key,data);
