@@ -1,0 +1,159 @@
+/*
+  Copyright 2014 Weswit Srl
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+body {
+  background-color: #FFFFFF;
+  color: #000000;
+  font-family: 'helvetica neue', Helvetica, Arial;
+}
+
+#wrap {
+  width: 700px;
+  margin: 0 auto;
+}
+#clear {
+  padding-top: 20px;
+  clear:both;
+}
+.button {
+  cursor:pointer;
+}
+
+/* Login stuff */
+#lock {
+  float:left;
+  margin-right:10px;
+}
+#lock img {
+  height: 100px;
+}
+#logout {
+  display: none;
+}
+#logout:hover {
+  color: #FF7600;
+}
+#submit_form, #logout {
+  margin-top: 30px;
+}
+
+/* Applications stuff */
+#stock_list {
+  display: none;
+}
+#portfolio {
+  display: none;
+}
+#chat {
+  display: none;
+}
+#scroll_stock_list {
+  height: 120px;
+  overflow:auto;
+}
+#scroll_portfolio {
+  height: 260px;
+  overflow:auto;
+}
+#scroll_chat {
+  height: 200px;
+  overflow:auto;
+}
+.itemrow {
+  padding: 10px;
+}
+.itemrow:hover {
+  background-color: #FF7600;
+}
+.tableTitle {
+  font-size: 12pt;
+  color: #ffffff;
+  background-color: #000000;
+  height:20px;
+  text-align: center;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.lshot {
+  font-size: 10pt;
+  color: #000000;
+  background: #ffff66;
+  font-weight: normal;
+  nowrap: nowrap;
+}
+.lscold {
+  font-size: 10pt;
+  color: #000000;
+  background: #ffffff;
+  font-weight: normal;
+  nowrap: nowrap;
+}
+.commandhot {
+  font-size: 10pt;
+  font-style: italic;
+  color: #000000;
+  background: #ffff66;
+  font-weight: normal;
+}
+.commandcold {
+  font-size: 10pt;
+  font-style: italic;
+  color: #000000;
+  background: #ffffff;
+  font-weight: normal;
+}
+#messages {
+  width: 500px;
+  height: 128px;
+  overflow: auto;
+  border-style: solid;
+  border-width: 3px;
+  background-color: #ffffff;
+}
+.messageContainer {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #000000;
+  padding: 5px 10px;
+  background-color: #FFFFFF;
+}
+.timestamp {
+  font-family: Sans-serif;
+  font-size: 9pt;
+  color: #000000;
+}
+.message {
+  font-family: Sans-serif;
+  overflow: auto;
+  color: #000090;
+  font-weight: bold;
+  padding-bottom: 15px;
+}
+
+/* Table stuff */
+#wrap table {
+  border-collapse: collapse;
+}
+#wrap th {
+  text-align: left;
+}
+#wrap td, #wrap th {
+  padding-left: 40px;
+  border-bottom: 1px solid black;
+}
