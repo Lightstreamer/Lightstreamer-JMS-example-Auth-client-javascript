@@ -273,7 +273,10 @@ function startPortfolio(conn) {
             producer.send(buyRequest);
         }
 
+        $("#buy").unbind("click");
         $("#buy").click(buySell);
+
+        $("#sell").unbind("click");
         $("#sell").click(buySell);
 
         // Enable form
@@ -310,6 +313,7 @@ function startChat(conn) {
         producer.send(message);
     }
 
+    $("#chatForm").unbind("submit");
     $("#chatForm").submit(send);
 
     // Enable form
