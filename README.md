@@ -5,9 +5,9 @@ The JMS Gateway Authentication and Authorization Demo is a simple example illust
 
 This project includes a simple web client front-end example for the [Lightstreamer JMS Gateway - Authentication and Authorization Demo - Java Hook](https://github.com/Weswit/Lightstreamer-JMS-example-Auth-hook-java).
 
-## Screenshot
+## Screenshots
 
-![screenshot](screenshot.png)
+![screenshot1](screenshot1.png) ![screenshot2](screenshot2.png) ![screenshot3](screenshot3.png)
 
 ## Details
 
