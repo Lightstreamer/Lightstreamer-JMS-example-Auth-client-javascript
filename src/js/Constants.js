@@ -19,8 +19,7 @@ define(function() {
 
   return {
     SERVER: protocolToUse + "//localhost:8080",
-    ADAPTER_SET: "JMS",
-    DATA_ADAPTER: "HornetQ",
+    JMS_CONNECTOR: "HornetQ",
     PORTFOLIO_ID: "portfolio1",
     J_NOTIFY_OPTIONS_ERR: {
       autoHide : true, // added in v2.0

@@ -17,7 +17,7 @@
 define(function() {
 
   // Here is the list of the user/password/token
-  // These info, excluding the password, are shared with the Metadata Adapter
+  // These info, excluding the password, are shared with the hook
   var users = {
       user1: {
         password:"wow",

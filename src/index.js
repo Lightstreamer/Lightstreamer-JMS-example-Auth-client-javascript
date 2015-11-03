@@ -73,8 +73,8 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
           $("#chat").slideDown();
           $("#logout").show();
 
-          // Now we can connect to JMS Gateway
-          ConnectionFactory.createConnection(Constants.SERVER, Constants.ADAPTER_SET, Constants.DATA_ADAPTER, user, token, {
+          // Now we can connect to JMS Extender
+          ConnectionFactory.createConnection(Constants.SERVER, Constants.JMS_CONNECTOR, user, token, {
             onConnectionCreated: function(conn) {
                 connection= conn;
 
@@ -129,7 +129,7 @@ require(["js/Authentication", "js/Constants", "js/stocks_grid", "js/portfolio_gr
                 startChat(conn);
 
             }, onConnectionFailed: function(errorCode, errorMessage) {
-                jError("Connection to JMS Gateway refused: " + errorCode + " " + errorMessage, Constants.J_NOTIFY_OPTIONS_ERR);
+                jError("Connection to JMS Extender refused: " + errorCode + " " + errorMessage, Constants.J_NOTIFY_OPTIONS_ERR);
 
                 // Hide login form, show application
                 $("#submit_form").show();
