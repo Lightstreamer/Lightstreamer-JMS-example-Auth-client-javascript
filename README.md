@@ -72,30 +72,29 @@ Before you can run the demo of this project some dependencies need to be solved:
   * [Lightstreamer JMS Extender - Portfolio Demo - Java (JMS) Service](https://github.com/Lightstreamer/Lightstreamer-JMS-example-Portfolio-service-java)
 * Install the [JMS Extender Hook](https://github.com/Lightstreamer/Lightstreamer-JMS-example-Auth-hook-java) required by this project.
 * Launch Lightstreamer JMS Extender and the two JMS demo services above.
-* Get the `lightstreamer-jms.js` file from the [Lightstreamer JMS Extender](http://download.lightstreamer.com/#jms) and put it in the `src/js` folder of this project.
-* [Lightstreamer visual widgets](https://github.com/Lightstreamer/Lightstreamer-lib-client-widgets-javascript), such as the status widget and dynagrid, are hot-linked in the html page: they are in no way mandatory and you may replace them with widgets from any other library by modifying `src/portfolio_grid.js`, `src/stocks_grid.js` and the `onLSClient` event in `src/index.js`.
-* RequireJS is currently hot-linked in the html page: you may want to replace it with a local version and/or to upgrade its version.
+* [Lightstreamer visual widgets](https://github.com/Lightstreamer/Lightstreamer-lib-client-widgets-javascript), such as the status widget and dynagrid, are hot-linked in the html page: they are in no way mandatory and you may replace them with widgets from any other library by modifying `src/js/portfolio_grid.js`, `src/js/stocks_grid.js` and the `onLSClient` event in `src/js/app.js`.
 * jQuery is currently hot-linked in the html page: you may want to replace it with a local version and/or to upgrade its version.
+* As the latest version of the Lightstreamer JMS Extender JavaScript library is always available through [unpkg](https://unpkg.com/lightstreamer-jms-web-client), it is hot-linked in the html page.
 
-Now, you need to configure the `src/js/Constants.js` of this example by specifying the name of the JMS connector you are going to use.
-By default the demo will look for the <b>HornetQ</b> JMS connector, please refer to the related services projects ([Stock-List Demo](https://github.com/Lightstreamer/Lightstreamer-JMS-example-StockList-service-java) and
+Now, you need to configure the `src/js/constants.js` of this example by specifying the name of the JMS connector you are going to use.
+By default the demo will look for the **ActiveMQ** JMS connector, please refer to the related services projects ([Stock-List Demo](https://github.com/Lightstreamer/Lightstreamer-JMS-example-StockList-service-java) and
 [Portfolio Demo](https://github.com/Lightstreamer/Lightstreamer-JMS-example-Portfolio-service-java))
 for more details on the choice of a JMS broker to be used.
 
-To set the JMS connector name look where the Constants object is returned:
+To set the JMS connector name look where the `constants` object is set:
 
 ```js
 [...]
 
-return {
-    SERVER: protocolToUse + "//localhost:8080",
-    JMS_CONNECTOR: "HornetQ",
+const constants =  {
+  SERVER: protocolToUse + "//localhost:8080",
+  JMS_CONNECTOR: "ActiveMQ",
 
 [...]
 ```
 
-To access the demo from a web browser, copy it somewhere under your webserver root directory. You can also add it to the JMS Extender internal web server pages under `JMSExtenderHome/pages` directory by copying there the `src` folder with a name such as `AuthDemo_JMS`. Subsequently you may access it as: <i>http://_your_jms_extender_http_address_/AuthDemo_JMS/</i>.
-Depending on the browser in use, and on the security settings, you might also be able to launch the index.html file directly from the file system.
+To access the demo from a web browser, copy it somewhere under your webserver root directory. You can also add it to the JMS Extender internal web server pages under `JMSExtenderHome/pages` directory by copying there the `src` folder with a name such as `AuthDemo_JMS`. Subsequently you may access it as: [http://_your_jms_extender_http_address_/AuthDemo_JMS/](http://_your_jms_extender_http_address_/AuthDemo_JMS/).
+Depending on the browser in use, and on the security settings, you might also be able to launch the `index.html` file directly from the file system.
 
 ## See Also
 
@@ -105,5 +104,5 @@ Depending on the browser in use, and on the security settings, you might also be
 
 ## JMS Extender Compatibility Notes
 
-* Compatible with Lightstreamer JMS Extender Client library version 1.2 or newer.
-* Compatible with Lightstreamer JMS Extender since version 1.5 or newer.
+* Compatible with Lightstreamer JMS Extender SDK for Web Clients since version 2.0.0 or newer.
+* Compatible with Lightstreamer JMS Extender since version 2.0.0 or newer.
