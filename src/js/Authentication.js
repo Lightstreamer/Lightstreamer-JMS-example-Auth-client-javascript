@@ -14,69 +14,69 @@
   limitations under the License.
 */
 
-define(function() {
+// Here is the list of the user/password/token.
+// These info, excluding the password, are shared with the hook
+const users = {
+  user1: {
+    password: "wow",
+    token: "ikgdfigdfhihdsih",
+    permissions: "stock-list, chat"
+  },
 
-  // Here is the list of the user/password/token
-  // These info, excluding the password, are shared with the hook
-  var users = {
-      user1: {
-        password:"wow",
-        token:"ikgdfigdfhihdsih",
-        permissions:"stock-list, chat"
-      },
+  patient0: {
+    password: "suchpassword",
+    token: "imwrongtoken",
+    permissions: "the token of this user will result expired on the server"
+  },
 
-      patient0: {
-        password:"suchpassword",
-        token:"imwrongtoken",
-        permissions:"the token of this user will result expired on the server"
-      },
+  leto: {
+    password: "sosecurity",
+    token: "powerfultoken",
+    permissions: "all"
+  },
 
-      leto: {
-        password:"sosecurity",
-        token:"powerfultoken",
-        permissions:"all"
-      },
+  gollum: {
+    password: "veryauth",
+    token: "toobadforyou",
+    permissions: "none"
+  },
 
-      gollum: {
-        password:"veryauth",
-        token:"toobadforyou",
-        permissions:"none"
-      },
+  lucky: {
+    password: "muchhappy",
+    token: "srsly",
+    permissions: "stock-list"
+  }
+};
 
-      lucky: {
-        password: "muchhappy",
-        token:"srsly",
-        permissions:"stock-list"
-      }
+function userClicked(user) {
+  return function () {
+    $("#user").val(user);
+    $("#password").val(users[user].password);
   };
+}
 
-  function userClicked(user) {
-    return function() {
-      $("#user").val(user);
-      $("#password").val(users[user].password);
-    };
-  }
+// Show the list of available user/password pairs on the page, I would not do that
+// on a production site ;)
+for (var user in users) {
+  $("#userlist").append(
+    $("<tr class='button'>")
+      .append($("<td>").text(user))
+      .append($("<td>").text(users[user].password))
+      .append($("<td>").text(users[user].permissions))
+      .click(userClicked(user)));
+}
 
-  // Show the list of available user/password pairs on the page, I would not do that
-  // on a production site ;)
-  for (var user in users) {
-    $("#userlist").append(
-        $("<tr class='button'>")
-          .append($("<td>").text(user))
-          .append($("<td>").text(users[user].password))
-          .append($("<td>").text(users[user].permissions))
-          .click(userClicked(user)));
-  }
-
-  return {
-    getToken: function(user, password) {
-      if (user in users) {
-        if (users[user].password == password) {
-          return users[user].token;
-        }
+const authentication =  {
+  getToken: function (user, password) {
+    if (user in users) {
+      if (users[user].password == password) {
+        return users[user].token;
       }
-      return null;
     }
-  };
-});
+    return null;
+  }
+};
+
+export default authentication;
+
 
