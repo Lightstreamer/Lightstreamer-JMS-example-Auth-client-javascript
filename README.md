@@ -92,7 +92,7 @@ const constants =  {
 [...]
 ```
 
-To access the demo from a web browser, copy it somewhere under your webserver root directory. You can also add it to the JMS Extender internal web server pages under `JMSExtenderHome/pages` directory by copying there the `src` folder with a name such as `AuthDemo_JMS`. Subsequently you may access it as: [http://_your_jms_extender_http_address_/AuthDemo_JMS/](http://_your_jms_extender_http_address_/AuthDemo_JMS/).
+To access the demo from a web browser, copy it somewhere under your webserver root directory. You can also add it to the JMS Extender internal web server pages under `<JMS_EXTENDER_HOME>/pages` directory by copying there the `src` folder with a name such as `AuthDemo_JMS`. Subsequently you may access it as: [http://_your_jms_extender_http_address_/AuthDemo_JMS/](http://_your_jms_extender_http_address_/AuthDemo_JMS/).
 Depending on the browser in use, and on the security settings, you might also be able to launch the `index.html` file directly from the file system.
 
 ## See Also
