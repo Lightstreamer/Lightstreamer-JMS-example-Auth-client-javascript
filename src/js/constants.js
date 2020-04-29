@@ -14,27 +14,27 @@
   limitations under the License.
 */
 
-define(function() {
-  var protocolToUse = document.location.protocol != "file:" ? document.location.protocol : "http:";
+const protocolToUse = document.location.protocol != "file:" ? document.location.protocol : "http:";
 
-  return {
-    SERVER: protocolToUse + "//localhost:8080",
-    JMS_CONNECTOR: "HornetQ",
-    PORTFOLIO_ID: "portfolio1",
-    J_NOTIFY_OPTIONS_ERR: {
-      autoHide : true, // added in v2.0
-      TimeShown : 3000,
-      clickOverlay: true,
-      HorizontalPosition : 'center',
-      VerticalPosition: 'center'
-    },
-    J_NOTIFY_OPTIONS_OK: {
-      autoHide : true, // added in v2.0
-      TimeShown : 500,
-      clickOverlay: true,
-      HorizontalPosition : 'center',
-      VerticalPosition: 'center'
-    },
-    TRIM_REGEXP: new RegExp("^\\s*([\\s\\S]*?)\\s*$")
-  };
-});
+const constants =  {
+  SERVER: protocolToUse + "//localhost:8080",
+  JMS_CONNECTOR: "ActiveMQ",
+  PORTFOLIO_ID: "portfolio1",
+  J_NOTIFY_OPTIONS_ERR: {
+    autoHide: true, // added in v2.0
+    TimeShown: 3000,
+    clickOverlay: true,
+    HorizontalPosition: 'center',
+    VerticalPosition: 'center'
+  },
+  J_NOTIFY_OPTIONS_OK: {
+    autoHide: true, // added in v2.0
+    TimeShown: 500,
+    clickOverlay: true,
+    HorizontalPosition: 'center',
+    VerticalPosition: 'center'
+  },
+  TRIM_REGEXP: new RegExp("^\\s*([\\s\\S]*?)\\s*$")
+};
+
+export default constants;

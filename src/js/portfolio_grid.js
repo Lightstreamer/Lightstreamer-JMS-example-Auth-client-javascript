@@ -14,89 +14,85 @@
   limitations under the License.
 */
 
-define(["DynaGrid"], function(DynaGrid) {
+// Cell highlighting time (milliseconds)
+const hotTime = 500;
+var direction = false; // True = decreasing; false = increasing; null = no sort
 
-  // Cell highlighting time (milliseconds)
-  var hotTime= 500;
-  var direction= false; // True = decreasing; false = increasing; null = no sort
-
-  var portfolioGrid= new DynaGrid("portfolio_grid", true);
-  portfolioGrid.setAutoCleanBehavior(true, false);
-  portfolioGrid.addListener({
-    onVisualUpdate: function(key, info) {
-      if (info == null) {
-
-        // Cleaning
-        return;
-      }
-
-      // visual effects on updates
-      info.setHotTime(hotTime);
-      info.setStyle("lshot", "lscold");
-      info.setCellStyle("command", "commandhot", "commandcold");
+var grid = new DynaGrid("portfolio_grid", true);
+grid.setAutoCleanBehavior(true, false);
+grid.addListener({
+  onVisualUpdate: function (key, info) {
+    if (info == null) {
+      // Cleaning
+      return;
     }
-  });
 
-  var SPACER = null;
-  var UP = "images/up.gif";
-  var DOWN = "images/down.gif";
-
-  var gridWrap = {
-    getDynaGrid: function() {
-      return portfolioGrid;
-    },
-
-    updateRow: function(key,data) {
-      if (data.qty == "0") {
-        portfolioGrid.removeRow(key);
-      } else {
-        portfolioGrid.updateRow(key,data);
-      }
-    },
-
-    changeSort: function(sortOn) {
-      var sortedBy = portfolioGrid.getSortField();
-      var arrow = null;
-
-      if (sortOn != sortedBy || direction === null) {
-        direction = false;
-        arrow = UP;
-      } else if (direction === false) {
-        direction = true;
-        arrow = DOWN;
-      } else {
-        direction = null;
-      }
-
-      if (sortOn != sortedBy || direction === null) {
-        var currentImg = $("#img_" + sortedBy);
-        var currentCol = $("#col_" + sortedBy);
-
-        currentCol.removeClass("tableTitleSorted");
-        currentImg.attr("src",SPACER);
-      }
-
-      if (direction !== null) {
-        var nextImg = $("#img_" + sortOn);
-        var nextCol = $("#col_" + sortOn);
-
-        nextImg.attr("src",arrow);
-        nextCol.addClass("tableTitleSorted");
-
-        if (sortOn == "qty") {
-          portfolioGrid.setSort(sortOn, direction, true, false);
-        } else {
-          portfolioGrid.setSort(sortOn, direction);
-        }
-      } else {
-        portfolioGrid.setSort(null);
-      }
-    }
-  };
-
-  $(".button[data-sorting]").click(function() {
-    gridWrap.changeSort($(this).data("sorting"));
-  });
-
-  return gridWrap;
+    // visual effects on updates
+    info.setHotTime(hotTime);
+    info.setStyle("lshot", "lscold");
+    info.setCellStyle("command", "commandhot", "commandcold");
+  }
 });
+
+const SPACER = null;
+const UP = "images/up.gif";
+const DOWN = "images/down.gif";
+
+const portfolioGrid = {
+  getDynaGrid: function () {
+    return grid;
+  },
+
+  updateRow: function (key, data) {
+    if (data.qty == "0") {
+      grid.removeRow(key);
+    } else {
+      grid.updateRow(key, data);
+    }
+  },
+
+  changeSort: function (sortOn) {
+    const sortedBy = grid.getSortField();
+    var arrow = null;
+
+    if (sortOn != sortedBy || direction === null) {
+      direction = false;
+      arrow = UP;
+    } else if (direction === false) {
+      direction = true;
+      arrow = DOWN;
+    } else {
+      direction = null;
+    }
+
+    if (sortOn != sortedBy || direction === null) {
+      var currentImg = $("#img_" + sortedBy);
+      var currentCol = $("#col_" + sortedBy);
+
+      currentCol.removeClass("tableTitleSorted");
+      currentImg.attr("src", SPACER);
+    }
+
+    if (direction !== null) {
+      var nextImg = $("#img_" + sortOn);
+      var nextCol = $("#col_" + sortOn);
+
+      nextImg.attr("src", arrow);
+      nextCol.addClass("tableTitleSorted");
+
+      if (sortOn == "qty") {
+        grid.setSort(sortOn, direction, true, false);
+      } else {
+        grid.setSort(sortOn, direction);
+      }
+    } else {
+      grid.setSort(null);
+    }
+  }
+};
+
+$(".button[data-sorting]").click(function () {
+  portfolioGrid.changeSort($(this).data("sorting"));
+});
+
+export default portfolioGrid;
